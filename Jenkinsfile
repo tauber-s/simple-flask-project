@@ -1,7 +1,8 @@
+#!groovy
 pipeline {
     agent { dockerfile true }
     stages {
-        stage('Test') {
+        stage('Test script') {
             steps {
                 echo 'Hello world!'
             }
