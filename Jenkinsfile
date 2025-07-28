@@ -1,22 +1,47 @@
 pipeline {
   agent any
 
+  environment {
+    DOCKER_IMAGE = "flask-app"
+    HELM_CHART_PATH = "helm/"
+    RELEASE_NAME = "flask-app"
+    NAMESPACE = "default"
+  }
+
   stages {
-    stage('Checkout') {
+    stage('Clone Git Repo') {
       steps {
-        git branch: 'main', url: 'https://github.com/tauber-s/simple-flask-project.git'
+        checkout scm
       }
     }
 
-    stage('Build') {
+    stage('Run Tests') {
       steps {
-        sh 'docker-compose -f docker-compose.yml build'
+        sh 'pip install -r requirements.txt'
+        sh 'pytest'
       }
     }
 
-    stage('Test') {
+    stage('Build Image') {
       steps {
-        sh 'docker-compose -f docker-compose.yml run --rm tests'
+        sh 'docker build -t $DOCKER_IMAGE .'
+      }
+    }
+
+    stage('Load to Minikube') {
+      steps {
+        sh 'eval $(minikube docker-env) && docker build -t $DOCKER_IMAGE .'
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        sh '''
+        helm upgrade --install $RELEASE_NAME $HELM_CHART_PATH \
+          --namespace $NAMESPACE \
+          --set image.repository=$DOCKER_IMAGE \
+          --set image.tag=latest
+        '''
       }
     }
   }
