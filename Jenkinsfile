@@ -4,7 +4,7 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', url: 'https://https://github.com/tauber-s/simple-flask-project.git'
+        git branch: 'main', url: 'https://github.com/tauber-s/simple-flask-project.git'
       }
     }
 
