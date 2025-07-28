@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 4. Run flask
 ```bash
-flask --app app run --host=0.0.0.0
+python run.py
 ```
 
 5. Run tests
