@@ -17,8 +17,7 @@ pipeline {
 
     stage('Run Tests') {
       steps {
-        sh 'pip3 install -r requirements.txt'
-        sh 'pytest'
+        sh 'docker-compose -f docker-compose.yml run --rm tests'
       }
     }
 
