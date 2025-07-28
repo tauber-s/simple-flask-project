@@ -15,15 +15,16 @@ pipeline {
       }
     }
 
-    stage('Run Tests') {
-      steps {
-        sh 'docker-compose -f docker-compose.yml run --rm tests'
-      }
-    }
-
     stage('Build Image') {
       steps {
         sh 'docker build -t $DOCKER_IMAGE .'
+      }
+    }
+
+    stage('Run Tests') {
+      steps {
+        sh 'pip install -r requirements.txt'
+        sh 'pytest'
       }
     }
 
